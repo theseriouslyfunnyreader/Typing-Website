@@ -1,0 +1,315 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+/* ── Design Tokens ────────────────────────────── */
+:root {
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+
+  /* Light */
+  --bg:           #f0f4ff;
+  --bg-alt:       #e8edf8;
+  --surface:      #ffffff;
+  --surface-2:    #f5f7ff;
+  --border:       #dde3f0;
+  --border-2:     #c8d1e8;
+
+  --text-1:       #0d1117;
+  --text-2:       #4b5563;
+  --text-3:       #9ca3af;
+
+  --accent:       #5b6ee1;
+  --accent-2:     #4757c7;
+  --accent-glow:  rgba(91, 110, 225, 0.25);
+
+  --green:        #10b981;
+  --red:          #ef4444;
+  --yellow:       #f59e0b;
+  --sky:          #38bdf8;
+  --platinum:     #94a3b8;
+
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:  0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+  --shadow-lg:  0 10px 30px rgba(0,0,0,0.10), 0 4px 10px rgba(0,0,0,0.05);
+  --shadow-accent: 0 4px 20px rgba(91,110,225,0.35);
+
+  /* Legacy compat */
+  --bg-color:       var(--bg);
+  --surface-color:  var(--surface);
+  --text-primary:   var(--text-1);
+  --text-secondary: var(--text-2);
+  --accent-primary: var(--accent);
+  --accent-hover:   var(--accent-2);
+  --border-color:   var(--border);
+  --error-color:    var(--red);
+  --success-color:  var(--green);
+}
+
+[data-theme='dark'] {
+  --bg:          #0b0f1a;
+  --bg-alt:      #111827;
+  --surface:     #161d2e;
+  --surface-2:   #1e2740;
+  --border:      #2a3352;
+  --border-2:    #374163;
+
+  --text-1:      #e8eeff;
+  --text-2:      #8b9cc8;
+  --text-3:      #4b5a80;
+
+  --accent:      #7b8ef0;
+  --accent-2:    #9aaaf5;
+  --accent-glow: rgba(123, 142, 240, 0.3);
+
+  --green:       #34d399;
+  --red:         #f87171;
+  --yellow:      #fbbf24;
+  --sky:         #7dd3fc;
+  --platinum:    #cbd5e1;
+
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.3);
+  --shadow-md:  0 4px 12px rgba(0,0,0,0.4);
+  --shadow-lg:  0 10px 30px rgba(0,0,0,0.5);
+  --shadow-accent: 0 4px 20px rgba(123,142,240,0.4);
+
+  --bg-color:       var(--bg);
+  --surface-color:  var(--surface);
+  --text-primary:   var(--text-1);
+  --text-secondary: var(--text-2);
+  --accent-primary: var(--accent);
+  --accent-hover:   var(--accent-2);
+  --border-color:   var(--border);
+  --error-color:    var(--red);
+  --success-color:  var(--green);
+}
+
+/* ── Reset ────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg);
+  color: var(--text-1);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  min-height: 100vh;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ── Typography ───────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+a:hover { color: var(--accent-2); }
+
+button { font-family: inherit; }
+
+/* ── Layout helpers ───────────────────────────── */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  width: 100%;
+}
+
+/* ── Card ─────────────────────────────────────── */
+.card {
+  background-color: var(--surface);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* ── Buttons ──────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1.1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  border: none;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(91,110,225,0.3);
+}
+.btn-primary:hover {
+  background: var(--accent-2);
+  box-shadow: var(--shadow-accent);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background-color: var(--surface-2);
+  color: var(--text-1);
+  border: 1px solid var(--border);
+}
+.btn-secondary:hover {
+  background-color: var(--border);
+  transform: translateY(-1px);
+}
+
+.btn-icon {
+  padding: 0.45rem;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-2);
+  border: 1px solid transparent;
+}
+.btn-icon:hover {
+  background-color: var(--surface-2);
+  color: var(--text-1);
+  border-color: var(--border);
+}
+
+/* ── Utilities ────────────────────────────────── */
+.mono { font-family: var(--font-mono); }
+
+.text-primary   { color: var(--text-1); }
+.text-secondary { color: var(--text-2); }
+.text-accent    { color: var(--accent); }
+.text-success   { color: var(--green); }
+.text-error     { color: var(--red); }
+.text-warning   { color: var(--yellow); }
+
+.flex            { display: flex; }
+.flex-col        { flex-direction: column; }
+.items-center    { align-items: center; }
+.justify-center  { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.gap-2  { gap: 0.5rem; }
+.gap-4  { gap: 1rem; }
+.gap-6  { gap: 1.5rem; }
+.gap-8  { gap: 2rem; }
+
+.text-center { text-align: center; }
+.text-sm  { font-size: 0.875rem; }
+.text-lg  { font-size: 1.125rem; }
+.text-xl  { font-size: 1.25rem; }
+.text-2xl { font-size: 1.5rem; }
+.text-3xl { font-size: 1.875rem; }
+.text-4xl { font-size: 2.25rem; }
+.font-bold     { font-weight: 700; }
+.font-semibold { font-weight: 600; }
+.font-medium   { font-weight: 500; }
+
+.shadow-sm { box-shadow: var(--shadow-sm); }
+.shadow-md { box-shadow: var(--shadow-md); }
+.rounded-md { border-radius: 6px; }
+.rounded-lg { border-radius: 10px; }
+
+.mt-4 { margin-top: 1rem; }
+.mt-8 { margin-top: 2rem; }
+.mb-4 { margin-bottom: 1rem; }
+.mb-8 { margin-bottom: 2rem; }
+.p-4  { padding: 1rem; }
+.p-6  { padding: 1.5rem; }
+
+/* ── Lesson grid squares ──────────────────────── */
+.lesson-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 10px;
+}
+
+.lesson-card {
+  aspect-ratio: 1;
+  background: var(--surface);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  border-bottom: 3px solid var(--border-2);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  text-decoration: none;
+  color: inherit;
+}
+.lesson-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  text-decoration: none;
+  color: inherit;
+}
+
+.lesson-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 6px 7px 0;
+}
+.lesson-card-num {
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--text-3);
+  line-height: 1;
+}
+.lesson-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 0 4px;
+}
+.lesson-card-letters {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--text-2);
+  letter-spacing: 0.05em;
+}
+.lesson-card-icon {
+  color: var(--text-3);
+}
+.lesson-card-stars {
+  display: flex;
+  gap: 1px;
+  padding: 0 4px 4px;
+  justify-content: center;
+}
+.lesson-card-footer {
+  background: var(--bg-alt);
+  border-top: 1px solid var(--border);
+  padding: 3px 4px;
+  text-align: center;
+  font-size: 9px;
+  line-height: 1.25;
+  color: var(--text-2);
+  font-weight: 500;
+  min-height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
