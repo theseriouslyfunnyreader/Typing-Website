@@ -5,10 +5,10 @@ import { Link } from 'react-router-dom';
 
 export function Practice() {
   const practiceModes = [
-    { title: 'Common Words', desc: 'Top 200 most frequent English words.' },
-    { title: 'Numbers & Symbols', desc: 'Practice row 4 keys and shift characters.' },
-    { title: 'Programmer', desc: 'Code snippets in JavaScript and Python.' },
-    { title: 'Custom Text', desc: 'Paste your own text to practice.' },
+    { title: 'Common Words', desc: 'Top 200 most frequent English words.', mode: 'words' },
+    { title: 'Numbers & Symbols', desc: 'Practice row 4 keys and shift characters.', mode: 'numbers' },
+    { title: 'Programmer', desc: 'Code snippets in JavaScript and Python.', mode: 'programmer' },
+    { title: 'Full Challenge', desc: 'Varied sentences, words, and numbers.', mode: 'mixed' },
   ];
 
   return (
@@ -29,7 +29,7 @@ export function Practice() {
               <h3 className="text-xl font-bold mb-2">{mode.title}</h3>
               <p className="text-secondary mb-6">{mode.desc}</p>
             </div>
-            <Link to={`/test?mode=${mode.title.toLowerCase().replace(/ /g, '-')}`}>
+            <Link to={`/test/run?mode=${mode.mode}&duration=60`}>
               <Button className="w-full">Start Practice</Button>
             </Link>
           </Card>

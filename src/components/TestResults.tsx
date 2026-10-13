@@ -26,7 +26,6 @@ function StatRing({
   sideDirection,
   ringColor,
   fillPct = 100,
-  gaugeMarkers,
 }: any) {
   const size = 160;
   const cx = size / 2;
@@ -230,21 +229,23 @@ export function TestResults({ wpm, accuracy, duration = 0, goalWpm = 40, onRetry
         );
       })()}
 
-      {/* Pass/Fail pill */}
+      {/* Pass/Fail or Complete pill */}
       <div style={{
         display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
-        background: isPass
-          ? 'color-mix(in srgb, var(--green) 15%, transparent)'
-          : 'color-mix(in srgb, var(--red) 15%, transparent)',
-        border: `1px solid ${isPass ? 'var(--green)' : 'var(--red)'}`,
-        color: isPass ? 'var(--green)' : 'var(--red)',
+        background: !lessonId
+          ? 'color-mix(in srgb, var(--accent) 15%, transparent)'
+          : isPass
+            ? 'color-mix(in srgb, var(--green) 15%, transparent)'
+            : 'color-mix(in srgb, var(--red) 15%, transparent)',
+        border: `1px solid ${!lessonId ? 'var(--accent)' : isPass ? 'var(--green)' : 'var(--red)'}`,
+        color: !lessonId ? 'var(--accent)' : isPass ? 'var(--green)' : 'var(--red)',
         borderRadius: '999px',
         padding: '0.3rem 1rem',
         fontSize: '0.8rem', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase',
         marginBottom: '2rem',
         position: 'relative', zIndex: 1,
       }}>
-        {isPass ? '✓ Passed' : '✗ Failed'}
+        {!lessonId ? '✓ Test Complete' : isPass ? '✓ Passed' : '✗ Failed'}
         {lessonId ? ` — Lesson ${lessonId}` : ''}
       </div>
 
@@ -301,14 +302,19 @@ export function TestResults({ wpm, accuracy, duration = 0, goalWpm = 40, onRetry
         <Button variant="secondary" onClick={onRetry}>
           <RotateCcw size={16} /> Try Again
         </Button>
-        {isPass && nextLessonId && (
+        {lessonId && isPass && nextLessonId ? (
           <Button onClick={() => navigate(`/learn/${nextLessonId}`)}>
             Next Lesson <ArrowRight size={16} />
           </Button>
-        )}
-        <Button variant="secondary" onClick={() => navigate('/learn')}>
-          Back to Lessons
+        ) : null}
+        <Button variant="secondary" onClick={() => navigate(lessonId ? '/learn' : '/test')}>
+          {lessonId ? 'Back to Lessons' : 'Back to Tests'}
         </Button>
+        {!lessonId && (
+          <Button onClick={() => navigate('/progress')}>
+            View Progress <ArrowRight size={16} />
+          </Button>
+        )}
       </div>
     </div>
   );

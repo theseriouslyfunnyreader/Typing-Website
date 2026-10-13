@@ -94,7 +94,7 @@ export function Home() {
       {/* Stats */}
       <div>
         <h2 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '0.75rem', color: 'var(--text-2)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Your Stats</h2>
-        {progress.testsCompleted === 0 ? (
+        {(progress.testsCompleted ?? 0) === 0 ? (
           <div style={{
             background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '12px',
             padding: '2.5rem', textAlign: 'center', color: 'var(--text-2)',
@@ -104,10 +104,10 @@ export function Home() {
           </div>
         ) : (
           <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-            <StatCard icon={Zap}    label="Best Speed"     value={progress.bestWpm}                              unit="WPM"  color="var(--accent)" />
-            <StatCard icon={Target} label="Avg Accuracy"   value={progress.averageAccuracy}                     unit="%"    color="var(--green)" />
-            <StatCard icon={Clock}  label="Practice Time"  value={Math.round(progress.totalPracticeTime / 60)} unit="min"  color="var(--sky)" />
-            <StatCard icon={Trophy} label="Streak"         value={progress.streak}                              unit="days" color="var(--yellow)" />
+            <StatCard icon={Zap}    label="Best Speed"     value={progress.bestWpm ?? 0}                              unit="WPM"  color="var(--accent)" />
+            <StatCard icon={Target} label="Avg Accuracy"   value={progress.averageAccuracy ?? 0}                     unit="%"    color="var(--green)" />
+            <StatCard icon={Clock}  label="Practice Time"  value={Math.round((progress.totalPracticeTime ?? 0) / 60)} unit="min"  color="var(--sky)" />
+            <StatCard icon={Trophy} label="Streak"         value={progress.streak ?? 0}                              unit="days" color="var(--yellow)" />
           </div>
         )}
       </div>

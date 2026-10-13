@@ -1,6 +1,8 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { AlignLeft, Hash, BookOpen, Shuffle, ArrowRight } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { AlignLeft, Hash, BookOpen, Shuffle, ArrowRight, Clock } from 'lucide-react';
+import { useLocalStorage, INITIAL_SETTINGS } from '../hooks/useLocalStorage';
+import type { UserSettings } from '../hooks/useLocalStorage';
 
 const modes = [
   {
@@ -33,12 +35,37 @@ const modes = [
   },
 ];
 
+const DURATIONS = [
+  { label: '15s', value: 15 },
+  { label: '30s', value: 30 },
+  { label: '60s', value: 60 },
+  { label: '2 min', value: 120 },
+];
+
 export function TestHome() {
   const navigate = useNavigate();
-  const [selectedMode, setSelectedMode] = useState('mixed');
+  const [searchParams] = useSearchParams();
+  const [settings] = useLocalStorage<UserSettings>('typesprint-settings', INITIAL_SETTINGS);
+
+  const initialMode = useMemo(() => {
+    const param = searchParams.get('mode');
+    if (!param) return 'mixed';
+    if (param.includes('word')) return 'words';
+    if (param.includes('sentence')) return 'sentences';
+    if (param.includes('number')) return 'numbers';
+    return param;
+  }, [searchParams]);
+
+  const initialDuration = useMemo(() => {
+    const param = searchParams.get('duration');
+    return param ? parseInt(param, 10) : settings.defaultDuration || 60;
+  }, [searchParams, settings.defaultDuration]);
+
+  const [selectedMode, setSelectedMode] = useState(initialMode);
+  const [selectedDuration, setSelectedDuration] = useState(initialDuration);
 
   const handleStart = () => {
-    navigate(`/test/run?mode=${selectedMode}`);
+    navigate(`/test/run?mode=${selectedMode}&duration=${selectedDuration}`);
   };
 
   return (
@@ -48,12 +75,49 @@ export function TestHome() {
       <div>
         <h1 style={{ fontSize: '1.8rem', fontWeight: 900, marginBottom: '0.35rem' }}>Typing Test</h1>
         <p style={{ color: 'var(--text-2)', fontSize: '0.95rem' }}>
-          Choose a mode and see how fast you can type.
+          Choose a mode and test duration to see how fast and accurate you can type.
         </p>
+      </div>
+
+      {/* Duration selector */}
+      <div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem', fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-2)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <Clock size={16} /> Test Duration
+        </div>
+        <div style={{ display: 'flex', gap: '0.6rem' }}>
+          {DURATIONS.map(({ label, value }) => {
+            const active = selectedDuration === value;
+            return (
+              <button
+                key={value}
+                onClick={() => setSelectedDuration(value)}
+                style={{
+                  flex: 1,
+                  padding: '0.7rem 0.5rem',
+                  borderRadius: '10px',
+                  border: active ? '2px solid var(--accent)' : '1px solid var(--border)',
+                  background: active ? 'color-mix(in srgb, var(--accent) 15%, var(--surface))' : 'var(--surface)',
+                  color: active ? 'var(--accent)' : 'var(--text-1)',
+                  fontWeight: active ? 700 : 500,
+                  fontSize: '0.9rem',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                  fontFamily: 'inherit',
+                  boxShadow: active ? 'var(--shadow-sm)' : 'none',
+                }}
+              >
+                {label}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Mode picker */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+        <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-2)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.15rem' }}>
+          Mode
+        </div>
         {modes.map(({ value, icon: Icon, label, desc, color }) => {
           const active = selectedMode === value;
           return (

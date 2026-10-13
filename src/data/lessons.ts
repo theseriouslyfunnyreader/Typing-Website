@@ -20,7 +20,7 @@ export const lessonsData: LessonData[] = Array.from({ length: 24 }, (_, i) => {
   else if ([8, 15, 22].includes(id)) iconType = 'character';
   else if ([16, 17].includes(id)) iconType = 'keyboard';
   
-  if (iconType === 'box' || iconType === 'searchbox') {
+  if (iconType === 'box') {
     if (id === 1) { 
       label = 'Introduction'; 
       text = 'ffff jjjj ff jj fff jjj fj fj jjf ffj fff jjj ffj jjf fjfj fffj jjjf ffjj ff jj ffff '.repeat(2).trim();

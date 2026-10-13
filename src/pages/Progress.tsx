@@ -19,6 +19,11 @@ const StatBox = ({ title, value, icon: Icon, unit = '' }: any) => (
 
 export function Progress() {
   const [progress] = useLocalStorage<UserProgress>('typesprint-progress', INITIAL_PROGRESS);
+  const history = progress.history ?? [];
+  const testsCompleted = progress.testsCompleted ?? 0;
+  const bestWpm = progress.bestWpm ?? 0;
+  const averageAccuracy = progress.averageAccuracy ?? 0;
+  const streak = progress.streak ?? 0;
 
   return (
     <div className="max-w-5xl mx-auto py-8">
@@ -28,19 +33,19 @@ export function Progress() {
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <StatBox title="Tests Completed" value={progress.testsCompleted} icon={Activity} />
-        <StatBox title="Best Speed" value={progress.bestWpm} unit="WPM" icon={Zap} />
-        <StatBox title="Avg Accuracy" value={progress.averageAccuracy} unit="%" icon={TrendingUp} />
-        <StatBox title="Current Streak" value={progress.streak} unit="days" icon={Calendar} />
+        <StatBox title="Tests Completed" value={testsCompleted} icon={Activity} />
+        <StatBox title="Best Speed" value={bestWpm} unit="WPM" icon={Zap} />
+        <StatBox title="Avg Accuracy" value={averageAccuracy} unit="%" icon={TrendingUp} />
+        <StatBox title="Current Streak" value={streak} unit="days" icon={Calendar} />
       </div>
 
       <Card className="p-8">
         <h3 className="text-xl font-bold mb-6">Recent History</h3>
-        {progress.history.length === 0 ? (
+        {history.length === 0 ? (
           <p className="text-secondary text-center py-8">No tests completed yet.</p>
         ) : (
           <div className="space-y-4">
-            {progress.history.slice(-5).reverse().map((test, i) => (
+            {history.slice(-5).reverse().map((test, i) => (
               <div key={i} className="flex justify-between items-center p-4 bg-surface-color rounded-lg border border-border-color">
                 <div className="text-secondary">
                   {new Date(test.date).toLocaleDateString()} at {new Date(test.date).toLocaleTimeString()}

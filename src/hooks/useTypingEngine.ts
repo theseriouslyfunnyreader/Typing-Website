@@ -40,6 +40,11 @@ export function useTypingEngine(
   });
 
   const timerRef = useRef<number | null>(null);
+  const onFinishRef = useRef(onFinish);
+
+  useEffect(() => {
+    onFinishRef.current = onFinish;
+  }, [onFinish]);
 
   const calculateStats = useCallback((
     typedStr: string,
@@ -65,8 +70,6 @@ export function useTypingEngine(
     };
   }, []);
 
-
-
   useEffect(() => {
     if (state.status === 'running') {
       timerRef.current = window.setInterval(() => {
@@ -76,6 +79,21 @@ export function useTypingEngine(
           const newTime = prev.elapsedTime + 1;
           const stats = calculateStats(prev.typed, prev.errors, prev.startTime!, Date.now());
           
+          if (durationInSeconds > 0 && newTime >= durationInSeconds) {
+            if (timerRef.current) clearInterval(timerRef.current);
+            const finalState = {
+              ...prev,
+              ...stats,
+              elapsedTime: durationInSeconds,
+              status: 'finished' as const,
+              endTime: Date.now(),
+            };
+            if (onFinishRef.current) {
+              setTimeout(() => onFinishRef.current?.(finalState), 0);
+            }
+            return finalState;
+          }
+
           return {
             ...prev,
             ...stats,
@@ -88,13 +106,12 @@ export function useTypingEngine(
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [state.status, calculateStats]);
-
-  // Auto-finish is now handled inside the timer interval above.
+  }, [state.status, calculateStats, durationInSeconds]);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       if (state.status === 'finished') return;
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
 
       const key = e.key;
       const isChar = key.length === 1;
@@ -172,8 +189,8 @@ export function useTypingEngine(
               timeRemaining: 0,
             };
 
-            if (onFinish) {
-               setTimeout(() => onFinish(finalState), 0);
+            if (onFinishRef.current) {
+               setTimeout(() => onFinishRef.current?.(finalState), 0);
             }
             return finalState;
           }
@@ -192,7 +209,7 @@ export function useTypingEngine(
         return prev;
       });
     },
-    [state.status, onFinish]
+    [state.status]
   );
 
   useEffect(() => {
@@ -219,6 +236,27 @@ export function useTypingEngine(
       errorKey: undefined,
     });
   }, [initialText]);
+
+  const [prevInitialText, setPrevInitialText] = useState(initialText);
+  if (initialText !== prevInitialText) {
+    setPrevInitialText(initialText);
+    setState({
+      status: 'idle',
+      text: initialText,
+      typed: '',
+      cursor: 0,
+      errors: [],
+      everWrong: [],
+      startTime: null,
+      endTime: null,
+      wpm: 0,
+      rawWpm: 0,
+      accuracy: 100,
+      elapsedTime: 0,
+      lastPressedKey: undefined,
+      errorKey: undefined,
+    });
+  }
 
   return { ...state, reset };
 }
